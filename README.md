@@ -64,15 +64,15 @@ login_grade后面的页面就是利用WEUI写得一个提交表单了，这里�
 
 ```
 POST /Default2.aspx HTTP/1.1
-Host: jwjx.njit.edu.cn
+Host: localhost
 Content-Length: 207
 Cache-Control: max-age=0
-Origin: http://jwjx.njit.edu.cn
+Origin: http://localhost
 Upgrade-Insecure-Requests: 1
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
-Referer: http://jwjx.njit.edu.cn/
+Referer: http://localhost/
 Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9
 Cookie: UM_distinctid=161e202e63c6d9-094afdbce42fa2-3b60450b-1fa400-161e202e63d5b7; ASP.NET_SessionId=ht5hadjnbrhcbebuqa3khb3s
@@ -171,15 +171,15 @@ RadioButtonList1=
 
 ```
 POST /xscjcx.aspx?xh=1111111 HTTP/1.1
-Host: jwjx.njit.edu.cn
+Host: localhost
 Content-Length: 3839
 Cache-Control: max-age=0
-Origin: http://jwjx.njit.edu.cn
+Origin: http://localhost
 Upgrade-Insecure-Requests: 1
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
-Referer: http://jwjx.njit.edu.cn/xscjcx.aspx?xh=208150815&xm=%B3%C9%CF%E9%D4%C0&gnmkdm=N121617
+Referer: http://localhost/xscjcx.aspx?xh=208150815&xm=%B3%C9%CF%E9%D4%C0&gnmkdm=N121617
 Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9
 Cookie: UM_distinctid=161e202e63c6d9-094afdbce42fa2-3b60450b-1fa400-161e202e63d5b7; ASP.NET_SessionId=ht5hadjnbrhcbebuqa3khb3s
