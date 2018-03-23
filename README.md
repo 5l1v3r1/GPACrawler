@@ -37,7 +37,7 @@ https://github.com/wangyufeng0615/bjuthelper
     require_verify_code();  //获取验证码
     function require_verify_code(){
         $cookie = dirname(__FILE__).'/cookie/'.$_SESSION['id'].'.txt';    //cookie路径  
-        $verify_code_url = "http://202.119.160.5/CheckCode.aspx";      //验证码地址
+        $verify_code_url = "http://localhost/CheckCode.aspx";      //验证码地址
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $verify_code_url);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $cookie);                     //保存cookie
@@ -123,7 +123,7 @@ RadioButtonList1=
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);  //不自动输出数据，要echo才行
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);  //重要，抓取跳转后数据
         curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie); 
-        curl_setopt($ch, CURLOPT_REFERER, 'http://202.119.160.5/default2.aspx');  //重要，302跳转需要referer，可以在Request Headers找到 
+        curl_setopt($ch, CURLOPT_REFERER, 'http://localhost/default2.aspx');  //重要，302跳转需要referer，可以在Request Headers找到 
         curl_setopt($ch, CURLOPT_POSTFIELDS,$post);  //post提交数据
         $result=curl_exec($ch);
         curl_close($ch);
@@ -132,7 +132,7 @@ RadioButtonList1=
 ```
 
 ```
-    $url="http://202.119.160.5/default2.aspx";  //教务地址
+    $url="http://localhost/default2.aspx";  //教务地址
     $con1=login_post($url,$cookie,'');               //登陆
     preg_match_all('/<input type="hidden" name="__VIEWSTATE" value="([^<>]+)" \/>/', $con1, $view); //获取__VIEWSTATE字段并存到$view数组中
 ```
@@ -201,7 +201,7 @@ __EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=dDw&hidLanguage=&ddlXN=2017-2018&ddl
 这几个参数都可以看出他们的意思，重要的是获取__VIEWSTATE的value值，同样利用一个正则去获取这个值
 
 ```
-		$url2="http://202.119.160.5/xscjcx.aspx?xh=".$_SESSION['xh'];
+		$url2="http://localhost/xscjcx.aspx?xh=".$_SESSION['xh'];
 		$viewstate=login_post($url2,'');
 		preg_match_all('/<input type="hidden" name="__VIEWSTATE" value="([^<>]+)" \/>/', $viewstate, $vs);
 		$state=$vs[1][0];  //$state存放一会post的__VIEWSTATE
