@@ -11,7 +11,7 @@
 <?php 
     session_start();
     header("Content-type: text/html; charset=utf-8");  //视学校而定，一般是gbk编码，php也采用的gbk编码方式
-    
+    include('simple_html_dom-master/simple_html_dom.php');//引入类库文件    
     //function: 构造post数据并登陆
     function login_post($url,$cookie,$post){
 		global $cookie;
@@ -104,7 +104,32 @@
 		$content_allgrade=get_td_array($content_allgrade);    //table转array
 		
 	//	print_r($content_allgrade);
-		
+		//查询已获取学分
+		$post_getgrade=array(
+		 '__EVENTTARGET'=>'',
+		 '__EVENTARGUMENT'=>'',
+		 '__VIEWSTATE'=>$state,
+		 'hidLanguage'=>'',
+		   'ddlXN'=>$current_year,  //当前学年
+		   'ddlXQ'=>$current_term,  //当前学期
+		   'ddl_kcxz'=>'',
+		   'Button1' => '%B3%C9%BC%A8%CD%B3%BC%C6'  //成绩统计-gbk
+		   );
+		   
+		$content_getgrade=login_post($url2,$cookie,http_build_query($post_getgrade));
+	//	print_r($content_getgrade);
+		$html = new simple_html_dom(); 
+		$html->load($content_getgrade);
+		foreach($html->find('span[id=xftj]') as $v){
+			$arr = $v->find('b', 0)->plaintext;
+		}
+		foreach($html->find('table.datelist') as $tr){
+			foreach($tr->find('td') as $td){
+				$table[] = $td->plaintext;
+			}
+		}
+		$html->clear(); 
+		preg_match_all('/获得学分(.*?)；/', $arr, $allgrade);
 		//计算总的加权分数和总的GPA
 		$i = 5;         //从array[5]开始是有效信息
 		$all_value = 0; //总的学分权值
@@ -112,36 +137,61 @@
 		$all_number_of_lesson = 0;  //总的课程数
 		$all_number_of_lesson_with_nopass = 0; //包含未过课程的总数
 		$all_number_of_lesson_with_public = 0;
-		$all_score_of_lesson_with_public = 0;
+		$all_score_of_lesson_with_public = $table[17];
+		$all_number_of_lesson_with_wantonly = 0;
+		$all_score_of_lesson_with_wantonly = $table[7];
+		$all_number_of_lesson_with_others = 0;
+		$all_score_of_lesson_with_others = 0;
 		//计算总和的东西，学分/GPA	
 		while(isset($content_allgrade[$i][4])){
 			if ($content_allgrade[$i][5] == iconv("utf-8","gb2312//IGNORE","公选")){
 				//计算公选课课程数和总学分
 				$all_number_of_lesson_with_public ++;
-				$all_score_of_lesson_with_public += $content_allgrade[$i][6];
+				//$all_score_of_lesson_with_public += $content_allgrade[$i][6];
+				$i++;
+			}
+			elseif($content_allgrade[$i][5] == iconv("utf-8","gb2312//IGNORE","任选")){
+				$all_number_of_lesson_with_wantonly ++;
+				//$all_score_of_lesson_with_wantonly += $content_allgrade[$i][6];
+				$i++;
+			}
+			elseif($content_allgrade[$i][5] == iconv("utf-8","gb2312//IGNORE","跨专业选修")){
+				$all_number_of_lesson_with_others ++;
+				//$all_score_of_lesson_with_others += $content_allgrade[$i][6];
 				$i++;
 			}
 			else{
-				$all_value += $content_allgrade[$i][6];	//已修总学分
+				//$all_value += $content_allgrade[$i][6];	//已修总学分
 				$all_GPA += ($content_allgrade[$i][6] * $content_allgrade[$i][7]); 
 				$i++;	
 			}
 		}
+		$all_value = $allgrade[1][0] - $all_score_of_lesson_with_public - $all_score_of_lesson_with_others;
 		echo '<div class="weui_cells_title">综合统计</div>';
 		echo '<div class="weui_cells">';
 		echo '<div class="weui_cell">';
 		echo '<div class="weui_cell_bd weui_cell_primary">';
-		printf("大学已修公选课程数: %.2d ",$all_number_of_lesson_with_public);
+		printf("大学获得任选课学分: %.2d 还需学分：%.2d ",$all_score_of_lesson_with_wantonly,$table[9]);
 		echo '</div>';
 		echo '</div>'; 
 		echo '<div class="weui_cell">';
 		echo '<div class="weui_cell_bd weui_cell_primary">';
-		printf("大学已修公选学分: %.2d ",$all_score_of_lesson_with_public);
+		printf("大学获得公选课学分: %.2d 还需学分：%.2d ",$all_score_of_lesson_with_public,$table[19]);
+		echo '</div>';
+		echo '</div>';
+		echo '<div class="weui_cell">';
+		echo '<div class="weui_cell_bd weui_cell_primary">';
+		printf("大学获得跨专业课学分: %.2d  还需学分：%.2d ",$all_score_of_lesson_with_others,$table[14]);
 		echo '</div>';
 		echo '</div>'; 
 		echo '<div class="weui_cell">';
 		echo '<div class="weui_cell_bd weui_cell_primary">';
-		printf("本学期平均学分绩点（GPA）: %.2lf",$all_GPA / $all_value);
+		printf("大学获得总课程学分: %.2lf ",$allgrade[1][0]);
+		echo '</div>';
+		echo '</div>'; 
+		echo '<div class="weui_cell">';
+		echo '<div class="weui_cell_bd weui_cell_primary">';
+		printf("获得平均学分绩点（GPA）: %.2lf",$all_GPA / $all_value);
 		echo '</div>';
 		echo '</div>'; 
 		echo '
